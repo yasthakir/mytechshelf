@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart | MyTechShelf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav-wrap">
+        <div class="brand">
+          <span class="brand-mark">TS</span>
+          <span>MyTechShelf</span>
+        </div>
+        <nav class="main-nav">
+          <a href="/">Home</a>
+          <a href="/more-books">More books</a>
+        </nav>
+        <a href="/" class="btn btn-secondary">Continue shopping</a>
+      </div>
+    </header>
+
+    <main class="cart-page">
+      <div class="container cart-layout">
+        <section class="cart-panel">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Shopping cart</span>
+              <h2>Your selected books</h2>
+            </div>
+          </div>
+          <div id="cartItems" class="cart-items"></div>
+        </section>
+
+        <aside class="cart-panel">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Summary</span>
+              <h2>Order total</h2>
+            </div>
+          </div>
+          <div class="cart-summary-box">
+            <div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div>
+            <div class="summary-row"><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
+            <div class="summary-row"><span>Delivery</span><strong>Free</strong></div>
+            <div class="summary-row total"><span>Total</span><strong id="total">₹0</strong></div>
+            <a href="/checkout" class="btn btn-primary">Proceed to checkout</a>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script src="/cart.js"></script>
+  </body>
+</html>
+
