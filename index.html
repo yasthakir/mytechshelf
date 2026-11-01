@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyTechShelf | Premium Ebooks</title>
+    <meta name="description" content="MyTechShelf premium ebooks for developers, designers, and career-focused learners." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="container nav-wrap">
+          <div class="brand">
+            <span class="brand-mark">TS</span>
+            <span>MyTechShelf</span>
+          </div>
+          <nav class="main-nav">
+            <a href="#books">Books</a>
+            <a href="#benefits">Why choose us</a>
+            <a href="#reviews">Reviews</a>
+          </nav>
+          <div class="header-actions">
+            <a href="/favorites" class="btn btn-secondary icon-pill favorite-pill" aria-label="Favorite books">
+              <span class="header-icon">♡</span>
+              <span id="favoriteCount">0</span>
+            </a>
+            <a href="/cart" class="btn btn-secondary cart-pill" aria-label="Cart">
+              <span class="header-icon">🛒</span>
+              <span id="cartCount">0</span>
+            </a>
+            <a href="#contact" class="btn btn-primary support-btn">Support</a>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero hero-v2">
+          <div class="hero-orb orb-pink"></div>
+          <div class="hero-orb orb-gold"></div>
+          <div class="hero-orb orb-white"></div>
+          <div class="container hero-v2-grid">
+            <div class="hero-v2-copy">
+              <span class="eyebrow">✨ Premium learning resources</span>
+              <h1 class="hero-title">Master modern skills with <span class="grad-text">premium ebooks</span></h1>
+              <p class="hero-sub">Curated guides for web, design & automation — instant access, real-world projects, and a smooth purchase experience built for ambitious creators.</p>
+              <div class="hero-actions">
+                <a href="#books" class="btn btn-primary btn-lg">Explore Library</a>
+                <a href="#benefits" class="btn btn-secondary btn-lg">Why MyTechShelf</a>
+              </div>
+              <div class="hero-stats">
+                <div class="hero-stat"><strong>10k+</strong><span>Learners</span></div>
+                <div class="hero-stat"><strong>120+</strong><span>Guides</span></div>
+                <div class="hero-stat"><strong>4.9★</strong><span>Rating</span></div>
+              </div>
+            </div>
+            <div class="hero-v2-visual">
+              <div class="hero-graphic">
+                <div class="graphic-ring ring-1"></div>
+                <div class="graphic-ring ring-2"></div>
+                <div class="graphic-ring ring-3"></div>
+                <div class="graphic-core">
+                  <span>∞</span>
+                  <p>MyTechShelf</p>
+                </div>
+                <div class="graphic-chip chip-1">Web Dev</div>
+                <div class="graphic-chip chip-2">Design</div>
+                <div class="graphic-chip chip-3">Automation</div>
+                <div class="graphic-chip chip-4">Career</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="stats-strip">
+          <div class="container stats-grid">
+            <div class="stat-item">
+              <strong>10k+</strong>
+              <span>Readers</span>
+            </div>
+            <div class="stat-item">
+              <strong>120+</strong>
+              <span>Premium guides</span>
+            </div>
+            <div class="stat-item">
+              <strong>4.9/5</strong>
+              <span>Average rating</span>
+            </div>
+            <div class="stat-item">
+              <strong>24/7</strong>
+              <span>Customer support</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="category-section">
+          <div class="container">
+            <div class="category-grid">
+              <article class="category-card">
+                <div class="icon">💻</div>
+                <h3>Programming Books</h3>
+                <p>Master web, design and automation with hands-on ebook guides.</p>
+                <a href="#books" class="btn btn-primary">Explore</a>
+              </article>
+              <article class="category-card">
+                <div class="icon">🎯</div>
+                <h3>Interview Practice Book</h3>
+                <p>Crack interviews with curated questions and real scenarios.</p>
+                <a href="#books" class="btn btn-secondary">Practice</a>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="reviews" class="reviews-showcase">
+          <div class="container review-showcase-wrap">
+            <div class="review-copy">
+              <span class="eyebrow">MyTechShelf reviews</span>
+              <h2>Students love the clarity, speed, and momentum.</h2>
+            </div>
+            <div class="floating-review-grid">
+              <div class="floating-review bubble-one">
+                <div class="bubble-stars">★★★★★</div>
+                <p>“The lessons are super practical and easy to apply.”</p>
+                <strong>Priya S.</strong>
+              </div>
+              <div class="floating-review bubble-two">
+                <div class="bubble-stars">★★★★★</div>
+                <p>“Perfect for fast upskilling and career-focused learning.”</p>
+                <strong>Arjun M.</strong>
+              </div>
+              <div class="floating-review bubble-three">
+                <div class="bubble-stars">★★★★★</div>
+                <p>“Clean structure, good examples, and total value for money.”</p>
+                <strong>Nisha K.</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="books" class="library-section">
+          <div class="container section-head">
+            <div>
+              <span class="eyebrow">Popular library</span>
+              <h2>Choose your next skill boost</h2>
+            </div>
+          </div>
+          <div id="booksGrid" class="books-grid container"></div>
+          <div class="container more-books-wrap">
+            <a href="/more-books" class="btn btn-secondary more-books-btn">More books</a>
+          </div>
+        </section>
+
+        <section id="benefits" class="benefits-section">
+          <div class="container">
+            <span class="eyebrow">Why learners choose us</span>
+            <h2>Built for practical growth</h2>
+            <div class="benefit-grid">
+              <article class="benefit-card">
+                <div class="icon">⚡</div>
+                <h3>Fast delivery</h3>
+                <p>Receive your ebook instantly via Gmail and WhatsApp after payment confirmation.</p>
+              </article>
+              <article class="benefit-card">
+                <div class="icon">📚</div>
+                <h3>Career-focused content</h3>
+                <p>Every ebook is curated around real projects, interviews, and practical workflows.</p>
+              </article>
+              <article class="benefit-card">
+                <div class="icon">💬</div>
+                <h3>Friendly support</h3>
+                <p>Need guidance? We help with onboarding, delivery, and learning recommendations.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer id="contact" class="site-footer">
+        <div class="container footer-wrap">
+          <div>
+            <div class="brand small-brand">
+              <span class="brand-mark">TS</span>
+              <span>MyTechShelf</span>
+            </div>
+            <p>Premium ebooks for ambitious learners.</p>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <p>Email: hello@coderslab.in</p>
+            <p>WhatsApp: +91 98765 43210</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <div id="purchaseModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-panel">
+        <button class="modal-close" type="button" aria-label="Close purchase form">×</button>
+        <div class="modal-head">
+          <span class="eyebrow">Secure payment</span>
+          <h3>Complete your purchase</h3>
+        </div>
+
+        <div class="payment-box">
+          <div>
+            <p class="label">Selected book</p>
+            <h4 id="selectedBookTitle">Book title</h4>
+            <p class="book-price" id="selectedBookPrice">₹0</p>
+          </div>
+          <div class="qr-wrap">
+            <img id="qrImage" src="" alt="UPI QR code" />
+          </div>
+        </div>
+
+        <p class="upi-note">
+          Scan this QR code using any UPI app. After payment, upload the screenshot and submit details.
+        </p>
+
+        <form id="orderForm" class="order-form" enctype="multipart/form-data">
+          <div class="field-grid">
+            <label>
+              Full name
+              <input type="text" name="name" placeholder="Your name" required />
+            </label>
+            <label>
+              Email address
+              <input type="email" name="email" placeholder="you@example.com" required />
+            </label>
+            <label>
+              WhatsApp number
+              <input type="tel" name="whatsapp" placeholder="+91 98xxx xxxxx" required />
+            </label>
+            <label>
+              Delivery format
+              <select name="deliveryType" required>
+                <option value="soft copy">Soft copy</option>
+                <option value="hard copy">Hard copy</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="file-upload-label">
+            Payment screenshot
+            <input type="file" name="screenshot" accept="image/*" required />
+          </label>
+
+          <input type="hidden" name="bookId" id="bookIdInput" />
+          <input type="hidden" name="amount" id="amountInput" />
+
+          <button class="btn btn-primary submit-btn" type="submit">Submit purchase</button>
+        </form>
+
+        <p id="orderMessage" class="form-message" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <script src="/script.js"></script>
+  </body>
+</html>
