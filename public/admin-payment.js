@@ -1,3 +1,6 @@
+const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf.onrender.com');
+const apiUrl = (path) => `${API_BASE}${path}`;
+
 const paymentForm = document.getElementById('paymentForm');
 const paymentMessage = document.getElementById('paymentMessage');
 const paymentQrPreview = document.getElementById('paymentQrPreview');
@@ -17,7 +20,7 @@ async function loadPaymentSettings() {
   if (!ensureSession()) return;
 
   const token = localStorage.getItem('coderslab_token');
-  const response = await fetch('/api/payment-settings', {
+  const response = await fetch(apiUrl('/api/payment-settings'), {
     headers: { Authorization: `Bearer ${token}` }
   });
 
@@ -52,7 +55,7 @@ paymentForm?.addEventListener('submit', async (event) => {
   paymentMessage.textContent = 'Saving payment settings...';
 
   try {
-    const response = await fetch('/api/payment-settings', {
+    const response = await fetch(apiUrl('/api/payment-settings'), {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`

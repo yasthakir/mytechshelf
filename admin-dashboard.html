@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodersLab Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="admin-body">
+    <header class="topbar admin-bar">
+      <div class="container nav-wrap admin-nav-wrap">
+        <div class="brand">
+          <span class="brand-mark">C</span>
+          <span>CodersLab | MyTechShelf</span>
+        </div>
+        <button type="button" class="admin-menu-toggle" aria-label="Open admin menu" aria-expanded="false">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <nav class="admin-nav">
+          <a href="/admin/dashboard" class="active">Dashboard</a>
+          <a href="/admin/books">Add Book</a>
+          <a href="/admin/payment">Payment</a>
+          <a href="/admin/buyers">Buyers</a>
+        </nav>
+        <button type="button" class="btn btn-secondary admin-logout">Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-page container">
+      <section class="admin-summary">
+        <div class="summary-card">
+          <span>Total books</span>
+          <strong id="totalBooks">0</strong>
+        </div>
+        <div class="summary-card">
+          <span>Total revenue</span>
+          <strong id="totalRevenue">₹0</strong>
+        </div>
+        <div class="summary-card">
+          <span>Orders</span>
+          <strong id="totalOrders">0</strong>
+        </div>
+        <div class="summary-card">
+          <span>Buyers</span>
+          <strong id="totalBuyers">0</strong>
+        </div>
+      </section>
+
+      <section class="admin-panel full-width-panel">
+        <div class="panel-head">
+          <h2>Book inventory</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="booksTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-panel full-width-panel">
+        <div class="panel-head">
+          <h2>Sales and customer details</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Book</th>
+                <th>Customer</th>
+                <th>Email</th>
+                <th>WhatsApp</th>
+                <th>Format</th>
+                <th>Amount</th>
+                <th>Payment</th>
+                <th>Sent PDF</th>
+                <th>Receipt</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/admin-nav.js"></script>
+    <script src="/admin-dashboard.js"></script>
+  </body>
+</html>

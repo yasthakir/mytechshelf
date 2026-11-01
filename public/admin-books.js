@@ -1,3 +1,6 @@
+const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf.onrender.com');
+const apiUrl = (path) => `${API_BASE}${path}`;
+
 const addBookForm = document.getElementById('addBookForm');
 const adminMessage = document.getElementById('adminMessage');
 const bookInventory = document.getElementById('bookInventory');
@@ -24,7 +27,7 @@ async function loadInventory() {
   if (!ensureSession()) return;
 
   const token = localStorage.getItem('coderslab_token');
-  const response = await fetch('/api/books', {
+  const response = await fetch(apiUrl('/api/books'), {
     headers: { Authorization: `Bearer ${token}` }
   });
 
@@ -61,7 +64,7 @@ async function loadInventory() {
       if (!confirmed) return;
 
       const token = localStorage.getItem('coderslab_token');
-      const response = await fetch(`/api/books/${button.dataset.id}`, {
+      const response = await fetch(apiUrl(`/api/books/${button.dataset.id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -88,7 +91,7 @@ addBookForm?.addEventListener('submit', async (event) => {
   const formData = new FormData(addBookForm);
 
   try {
-    const response = await fetch('/api/books', {
+    const response = await fetch(apiUrl('/api/books'), {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData

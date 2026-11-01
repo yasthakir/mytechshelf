@@ -68,6 +68,53 @@
       </div>
     </main>
 
+    <div id="paymentModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-panel">
+        <button class="modal-close" type="button" aria-label="Close payment modal">×</button>
+        <div class="modal-head">
+          <span class="eyebrow">Secure payment</span>
+          <h3>Pay and confirm your order</h3>
+        </div>
+
+        <div class="payment-box">
+          <div>
+            <p class="label">Total amount</p>
+            <h4 id="paymentTotalLabel">₹0</h4>
+          </div>
+          <div class="qr-wrap">
+            <img id="checkoutQrImage" src="" alt="UPI QR code" />
+          </div>
+        </div>
+
+        <p class="upi-note">Scan this QR code using any UPI app. After payment, tick the box below, upload the payment screenshot, and submit.</p>
+
+        <form id="paymentForm" class="order-form" enctype="multipart/form-data">
+          <label class="checkbox-row">
+            <input type="checkbox" id="paidCheckbox" />
+            <span>Paid</span>
+          </label>
+
+          <label class="file-upload-label">
+            Payment screenshot
+            <input type="file" id="paymentScreenshot" name="screenshot" accept="image/*" />
+          </label>
+
+          <input type="hidden" id="checkoutBookId" name="bookId" />
+          <input type="hidden" id="checkoutAmount" name="amount" />
+          <input type="hidden" id="checkoutCustomerName" name="name" />
+          <input type="hidden" id="checkoutCustomerEmail" name="email" />
+          <input type="hidden" id="checkoutCustomerPhone" name="whatsapp" />
+          <input type="hidden" id="checkoutCustomerAddress" name="address" />
+          <input type="hidden" id="checkoutPaymentStatus" name="paymentStatus" value="Pending" />
+
+          <button type="submit" class="btn btn-primary submit-btn">Submit payment proof</button>
+        </form>
+
+        <p id="paymentModalMessage" class="form-message" aria-live="polite"></p>
+      </div>
+    </div>
+
     <script src="/checkout.js"></script>
   </body>
 </html>

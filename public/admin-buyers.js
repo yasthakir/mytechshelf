@@ -1,3 +1,6 @@
+const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf.onrender.com');
+const apiUrl = (path) => `${API_BASE}${path}`;
+
 const buyersTableBody = document.getElementById('buyersTableBody');
 const logoutBtn = document.querySelector('.admin-logout');
 
@@ -29,7 +32,7 @@ async function loadBuyers() {
   if (!ensureSession()) return;
 
   const token = localStorage.getItem('coderslab_token');
-  const response = await fetch('/api/orders', {
+  const response = await fetch(apiUrl('/api/orders'), {
     headers: { Authorization: `Bearer ${token}` }
   });
 
@@ -70,7 +73,7 @@ async function loadBuyers() {
   buyersTableBody.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
     checkbox.addEventListener('change', async (event) => {
       const token = localStorage.getItem('coderslab_token');
-      const response = await fetch(`/api/orders/${event.target.dataset.id}/sent-pdf`, {
+      const response = await fetch(apiUrl(`/api/orders/${event.target.dataset.id}/sent-pdf`), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

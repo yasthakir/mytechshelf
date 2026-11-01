@@ -460,7 +460,7 @@ app.get('/api/qr', async (req, res) => {
 
 app.post('/api/books', upload.array('images', 10), async (req, res) => {
   const books = await getBooksFromStore({ limit: 0 });
-  const { title, author, description, price, category, imageUrl } = req.body;
+  const { title, author, description, price, category, imageUrl, std } = req.body;
 
   if (!title || !author || !description || !price) {
     return res.status(400).json({ message: 'Book title, author, description, and price are required.' });
@@ -474,6 +474,7 @@ app.post('/api/books', upload.array('images', 10), async (req, res) => {
     description: description.trim(),
     price: Number(price),
     category: normalizedCategory,
+    std: String(std || '').trim(),
     image: req.files && req.files.length ? `/uploads/${req.files[0].filename}` : (imageUrl || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80'),
     featured: false,
     stock: 25,
@@ -534,7 +535,7 @@ app.post('/api/orders', upload.single('screenshot'), async (req, res) => {
   res.status(201).json({
     success: true,
     message: normalizedStatus === 'Paid'
-      ? 'Payment received successfully. We will send the ebook via Gmail and WhatsApp.'
+      ? 'Payment received successfully. We will send the PDF within 10–15 minutes. If not received, contact us at info@mytechshelf.in.'
       : 'Order received. Please complete the payment confirmation to unlock delivery.',
     order: newOrder
   });

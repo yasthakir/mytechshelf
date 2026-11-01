@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Favorite Books | MyTechShelf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav-wrap">
+        <div class="brand">
+          <span class="brand-mark">TS</span>
+          <span>MyTechShelf</span>
+        </div>
+        <nav class="main-nav">
+          <a href="/">Home</a>
+          <a href="/more-books">More books</a>
+          <a href="/cart">Cart</a>
+        </nav>
+        <div class="header-actions">
+          <a href="/favorites" class="btn btn-secondary icon-pill favorite-pill" aria-label="Favorite books">
+            <span class="header-icon">♡</span>
+            <span id="favoriteCount">0</span>
+          </a>
+          <a href="/cart" class="btn btn-secondary cart-pill" aria-label="Cart">
+            <span class="header-icon">🛒</span>
+            <span id="cartCount">0</span>
+          </a>
+          <a href="#contact" class="btn btn-primary support-btn">Support</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="cart-page">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Favorites</span>
+            <h2>Your saved books</h2>
+          </div>
+        </div>
+        <div id="favoritesGrid" class="books-grid"></div>
+      </div>
+    </main>
+
+    <script src="/favorites.js"></script>
+  </body>
+</html>

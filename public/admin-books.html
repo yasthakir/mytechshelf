@@ -62,8 +62,13 @@
               Description
               <textarea name="description" rows="4" required></textarea>
             </label>
-            <label class="file-upload-label">
-              Book cover image
+            <label>
+              Standard (for school notes)
+              <select name="std">
+                <option value="">N/A</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+            </label>
               <input type="file" name="images" accept="image/*" multiple required />
             </label>
             <button class="btn btn-primary" type="submit">Add Book</button>
