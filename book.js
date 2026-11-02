@@ -1,3 +1,6 @@
+const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf-backend.onrender.com');
+const apiUrl = (path) => `${API_BASE}${path}`;
+
 const detailBookImage = document.getElementById('detailBookImage');
 const detailBookCategory = document.getElementById('detailBookCategory');
 const detailBookTitle = document.getElementById('detailBookTitle');
@@ -92,7 +95,7 @@ async function loadBook() {
     return;
   }
 
-  const response = await fetch(`/api/books/${routeId}`);
+  const response = await fetch(apiUrl(`/api/books/${routeId}`));
 
   if (!response.ok) {
     window.location.href = '/';
@@ -139,7 +142,7 @@ async function openPurchaseModal(book) {
   bookIdInput.value = book.id;
   amountInput.value = String(book.price);
 
-  const qrResponse = await fetch(`/api/qr?amount=${book.price}`);
+  const qrResponse = await fetch(apiUrl(`/api/qr?amount=${book.price}`));
   const qrData = await qrResponse.json();
   qrImage.src = qrData.qrDataUrl;
 
@@ -250,7 +253,7 @@ orderForm.addEventListener('submit', async (event) => {
   }
 
   try {
-    const response = await fetch('/api/orders', {
+    const response = await fetch(apiUrl('/api/orders'), {
       method: 'POST',
       body: formData
     });

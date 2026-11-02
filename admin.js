@@ -1,3 +1,6 @@
+const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf-backend.onrender.com');
+const apiUrl = (path) => `${API_BASE}${path}`;
+
 const totalBooks = document.getElementById('totalBooks');
 const totalRevenue = document.getElementById('totalRevenue');
 const totalOrders = document.getElementById('totalOrders');
@@ -24,9 +27,9 @@ function formatDate(dateString) {
 
 async function fetchDashboardData() {
   const [booksResponse, ordersResponse, statsResponse] = await Promise.all([
-    fetch('/api/books'),
-    fetch('/api/orders'),
-    fetch('/api/stats')
+    fetch(apiUrl('/api/books')),
+    fetch(apiUrl('/api/orders')),
+    fetch(apiUrl('/api/stats'))
   ]);
 
   const books = await booksResponse.json();
@@ -78,7 +81,7 @@ addBookForm.addEventListener('submit', async (event) => {
   const formData = new FormData(addBookForm);
 
   try {
-    const response = await fetch('/api/books', {
+    const response = await fetch(apiUrl('/api/books'), {
       method: 'POST',
       body: formData
     });

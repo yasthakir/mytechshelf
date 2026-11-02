@@ -1,3 +1,6 @@
+const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf-backend.onrender.com');
+const apiUrl = (path) => `${API_BASE}${path}`;
+
 const booksGrid = document.getElementById('booksGrid');
 
 function money(value) {
@@ -99,7 +102,7 @@ function toggleFavorite(book) {
 }
 
 async function loadBooks() {
-  const response = await fetch('/api/books');
+  const response = await fetch(apiUrl('/api/books'));
   const books = await response.json();
 
   const visibleBooks = books.slice(0, 5);

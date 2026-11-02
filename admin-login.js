@@ -1,3 +1,6 @@
+const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf-backend.onrender.com');
+const apiUrl = (path) => `${API_BASE}${path}`;
+
 const loginForm = document.getElementById('loginForm');
 const loginError = document.getElementById('loginError');
 
@@ -16,7 +19,7 @@ loginForm?.addEventListener('submit', async (event) => {
   const password = document.getElementById('password').value.trim();
 
   try {
-    const response = await fetch('/api/admin/login', {
+    const response = await fetch(apiUrl('/api/admin/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
