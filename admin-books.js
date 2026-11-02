@@ -5,6 +5,20 @@ const addBookForm = document.getElementById('addBookForm');
 const adminMessage = document.getElementById('adminMessage');
 const bookInventory = document.getElementById('bookInventory');
 const logoutBtn = document.querySelector('.admin-logout');
+const bookCategory = document.getElementById('bookCategory');
+const bookStd = document.getElementById('bookStd');
+const bookSubject = document.getElementById('bookSubject');
+
+function toggleSchoolBookFields() {
+  const category = bookCategory?.value || 'Programming Books';
+  const isSchoolStyle = category === 'School Notes' || category === 'Competitive Exam Notes';
+  if (bookStd) bookStd.required = isSchoolStyle;
+  if (bookSubject) bookSubject.required = isSchoolStyle;
+  const fields = document.querySelectorAll('.school-book-field');
+  fields.forEach((field) => {
+    field.style.display = isSchoolStyle ? 'block' : 'none';
+  });
+}
 
 function ensureSession() {
   const token = localStorage.getItem('coderslab_token');
@@ -82,6 +96,9 @@ async function loadInventory() {
   });
 }
 
+bookCategory?.addEventListener('change', toggleSchoolBookFields);
+toggleSchoolBookFields();
+
 addBookForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
   adminMessage.textContent = 'Adding book...';
@@ -89,6 +106,13 @@ addBookForm?.addEventListener('submit', async (event) => {
 
   const token = localStorage.getItem('coderslab_token');
   const formData = new FormData(addBookForm);
+
+  const category = String(formData.get('category') || '').trim();
+  if ((category === 'School Notes' || category === 'Competitive Exam Notes') && (!formData.get('std') || !formData.get('subject'))) {
+    adminMessage.textContent = 'Please select the class and subject for this notes category.';
+    adminMessage.style.color = '#fca5a5';
+    return;
+  }
 
   try {
     const response = await fetch(apiUrl('/api/books'), {

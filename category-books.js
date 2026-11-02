@@ -1,5 +1,8 @@
 const booksGrid = document.getElementById('booksGrid');
 const categoryTitle = document.getElementById('categoryTitle');
+const stdFilter = document.getElementById('stdFilter');
+const subjectFilter = document.getElementById('subjectFilter');
+const schoolFilters = document.getElementById('schoolFilters');
 
 function money(value) {
   return new Intl.NumberFormat('en-IN', {
@@ -80,18 +83,37 @@ function renderStars(rating = 0) {
   return `<span class="star-row" aria-label="${rating} out of 5 stars">${stars}</span>`;
 }
 
+function applyCategoryFilters(books, category) {
+  const selectedStd = stdFilter?.value || '';
+  const selectedSubject = subjectFilter?.value || '';
+
+  return books.filter((book) => {
+    if (category !== 'School Notes' && category !== 'Competitive Exam Notes') {
+      return true;
+    }
+
+    const matchesStd = !selectedStd || String(book.std || '').trim() === selectedStd;
+    const matchesSubject = !selectedSubject || String(book.subject || '').trim().toLowerCase() === selectedSubject.toLowerCase();
+    return matchesStd && matchesSubject;
+  });
+}
+
 async function loadCategoryBooks() {
   const params = new URLSearchParams(window.location.search);
   const category = params.get('category') || 'Programming Books';
+  const shouldShowFilters = category === 'School Notes' || category === 'Competitive Exam Notes';
   categoryTitle.textContent = category;
+  if (schoolFilters) schoolFilters.style.display = shouldShowFilters ? 'flex' : 'none';
 
   const response = await fetch(`/api/books?category=${encodeURIComponent(category)}`);
   const books = await response.json();
+  const filteredBooks = applyCategoryFilters(books, category);
 
-  booksGrid.innerHTML = books.length
-    ? books
+  booksGrid.innerHTML = filteredBooks.length
+    ? filteredBooks
         .map((book) => {
           const isFavorite = getFavorites().some((item) => item.id === book.id);
+          const metadata = shouldShowFilters ? `<div class="book-meta-pill">Class ${book.std || 'N/A'}</div><div class="book-meta-pill">${book.subject || 'General'}</div>` : '';
           return `
             <article class="book-card" data-book-id="${book.id}" tabindex="0" aria-label="Open ${book.title}">
               <button class="favorite-toggle ${isFavorite ? 'active' : ''}" data-id="${book.id}" data-title="${book.title}" data-price="${book.price}" data-image="${book.image || ''}" data-category="${book.category || 'General'}" data-description="${book.description || ''}" aria-label="${isFavorite ? 'Remove from favorites' : 'Add to favorites'}">${isFavorite ? '♥' : '♡'}</button>
@@ -107,6 +129,7 @@ async function loadCategoryBooks() {
                   ${renderStars(book.rating || 4.8)}
                   <span class="rating-copy">${Number(book.rating || 4.8).toFixed(1)}</span>
                 </div>
+                ${shouldShowFilters ? `<div class="meta-row small-meta-row">${metadata}</div>` : ''}
                 <p>${book.description}</p>
                 <div class="book-footer">
                   <strong>${money(book.price)}</strong>
@@ -164,6 +187,9 @@ async function loadCategoryBooks() {
   updateCartBadge();
   setFavoriteCount();
 }
+
+stdFilter?.addEventListener('change', loadCategoryBooks);
+subjectFilter?.addEventListener('change', loadCategoryBooks);
 
 updateCartBadge();
 setFavoriteCount();

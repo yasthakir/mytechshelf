@@ -48,11 +48,48 @@
             </label>
             <label>
               Category
-              <select name="category" required>
+              <select name="category" id="bookCategory" required>
                 <option value="Programming Books">Programming Books</option>
                 <option value="Interview Practice Books">Interview Practice Books</option>
+                <option value="School Notes">School Notes</option>
+                <option value="Competitive Exam Notes">Competitive Exam Notes</option>
               </select>
             </label>
+            <div class="field-grid">
+              <label class="school-book-field">
+                Class / Standard
+                <select name="std" id="bookStd">
+                  <option value="">Select class</option>
+                  <option value="6">6th</option>
+                  <option value="7">7th</option>
+                  <option value="8">8th</option>
+                  <option value="9">9th</option>
+                  <option value="10">10th</option>
+                  <option value="11">11th</option>
+                  <option value="12">12th</option>
+                </select>
+              </label>
+              <label class="school-book-field">
+                Subject
+                <select name="subject" id="bookSubject">
+                  <option value="">Select subject</option>
+                  <option value="Maths">Maths</option>
+                  <option value="Science">Science</option>
+                  <option value="English">English</option>
+                  <option value="Tamil">Tamil</option>
+                  <option value="Social Science">Social Science</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Physics">Physics</option>
+                  <option value="Chemistry">Chemistry</option>
+                  <option value="Biology">Biology</option>
+                  <option value="Commerce">Commerce</option>
+                  <option value="Aptitude">Aptitude</option>
+                  <option value="Reasoning">Reasoning</option>
+                  <option value="General Knowledge">General Knowledge</option>
+                  <option value="Current Affairs">Current Affairs</option>
+                </select>
+              </label>
+            </div>
             <label>
               Price (₹)
               <input type="number" name="price" min="1" required />
