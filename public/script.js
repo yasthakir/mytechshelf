@@ -1,5 +1,5 @@
 const booksGrid = document.getElementById('booksGrid');
-const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf.onrender.com');
+const API_BASE = (window.MYTECHSHELF_API_URL || '') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '' : 'https://mytechshelf-backend.onrender.com');
 const apiUrl = (path) => `${API_BASE}${path}`;
 
 function money(value) {
