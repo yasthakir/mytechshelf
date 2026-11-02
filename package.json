@@ -1,0 +1,29 @@
+{
+  "name": "infinity-software",
+  "version": "1.0.0",
+  "description": "",
+  "main": "admin-books.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yasthakir/mytechshelf.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yasthakir/mytechshelf/issues"
+  },
+  "homepage": "https://github.com/yasthakir/mytechshelf#readme",
+  "dependencies": {
+    "cloudinary": "^2.11.0",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.8.0",
+    "multer": "^2.5.0",
+    "qrcode": "^1.5.4"
+  }
+}

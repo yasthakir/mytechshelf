@@ -4,6 +4,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const QRCode = require('qrcode');
+const cloudinary = require('cloudinary').v2;
 const { MongoClient } = require('mongodb');
 
 const app = express();
@@ -30,6 +31,19 @@ const ADMIN_ACCOUNT = {
 };
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://yasminefathima0401_db_user:9Yn0Xsc1IHegupT3@cluster0.jghuucp.mongodb.net/infinity-software?retryWrites=true&w=majority';
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'infinity-software';
+const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME || '';
+const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY || '';
+const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || '';
+const BACKEND_PUBLIC_URL = process.env.BACKEND_PUBLIC_URL || process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+
+if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_API_KEY && CLOUDINARY_API_SECRET) {
+  cloudinary.config({
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
+    secure: true
+  });
+}
 
 let mongoClient = null;
 
@@ -166,8 +180,44 @@ function normalizeBook(book) {
     stock: Number(book.stock || 25),
     price: Number(book.price || 0),
     std: String(book.std || '').trim(),
-    subject: String(book.subject || '').trim()
+    subject: String(book.subject || '').trim(),
+    image: normalizeImageUrl(book.image)
   };
+}
+
+function normalizeImageUrl(value) {
+  if (!value || typeof value !== 'string') {
+    return value || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80';
+  }
+
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    return value;
+  }
+
+  if (!value.startsWith('/')) {
+    return value;
+  }
+
+  const base = BACKEND_PUBLIC_URL || 'http://localhost:3000';
+  return `${base.replace(/\/$/, '')}${value}`;
+}
+
+async function uploadBookImage(file) {
+  if (!file) {
+    return '';
+  }
+
+  if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_API_KEY && CLOUDINARY_API_SECRET) {
+    const result = await cloudinary.uploader.upload(file.path, {
+      folder: 'mytechshelf/books',
+      transformation: [{ quality: 'auto', fetch_format: 'auto' }]
+    });
+
+    return result.secure_url || result.url || '';
+  }
+
+  const relativePath = `/uploads/${file.filename}`;
+  return normalizeImageUrl(relativePath);
 }
 
 function limitVisibleBooks(books, limit = MAX_BOOKS_VISIBLE) {
@@ -505,6 +555,9 @@ app.post('/api/books', upload.array('images', 10), async (req, res) => {
     return res.status(400).json({ message: 'Please select the class and subject for this school or competitive notes book.' });
   }
 
+  const uploadedImageFile = req.files && req.files[0];
+  const uploadedImageUrl = uploadedImageFile ? await uploadBookImage(uploadedImageFile) : '';
+
   const nextBook = normalizeBook({
     id: `book-${Date.now()}`,
     title: title.trim(),
@@ -514,7 +567,7 @@ app.post('/api/books', upload.array('images', 10), async (req, res) => {
     category: normalizedCategory,
     std: normalizedStd,
     subject: normalizedSubject,
-    image: req.files && req.files.length ? `/uploads/${req.files[0].filename}` : (imageUrl || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80'),
+    image: uploadedImageUrl || normalizeImageUrl(imageUrl || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80'),
     featured: false,
     stock: 25,
     rating: 4.8,
