@@ -38,7 +38,7 @@ async function deleteBookFromDashboard(bookId) {
   if (!confirmed) return;
 
   const token = localStorage.getItem('coderslab_token');
-  const response = await fetch(`/api/books/${bookId}`, {
+  const response = await fetch(apiUrl(`/api/books/${bookId}`), {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -56,13 +56,13 @@ async function fetchDashboardData() {
 
   const token = localStorage.getItem('coderslab_token');
   const [booksResponse, ordersResponse, statsResponse] = await Promise.all([
-    fetch('/api/books', {
+    fetch(apiUrl('/api/books'), {
       headers: { Authorization: `Bearer ${token}` }
     }),
-    fetch('/api/orders', {
+    fetch(apiUrl('/api/orders'), {
       headers: { Authorization: `Bearer ${token}` }
     }),
-    fetch('/api/stats', {
+    fetch(apiUrl('/api/stats'), {
       headers: { Authorization: `Bearer ${token}` }
     })
   ]);
@@ -132,7 +132,7 @@ async function fetchDashboardData() {
   ordersTableBody.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
     checkbox.addEventListener('change', async (event) => {
       const token = localStorage.getItem('coderslab_token');
-      const response = await fetch(`/api/orders/${event.target.dataset.id}/sent-pdf`, {
+      const response = await fetch(apiUrl(`/api/orders/${event.target.dataset.id}/sent-pdf`), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
