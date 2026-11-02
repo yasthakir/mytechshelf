@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const category = params.get('category');
+      const query = category ? `?category=${encodeURIComponent(category)}` : '';
+      window.location.replace(`/category-books.html${query}`);
+    </script>
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to books...</p>
+  </body>
+</html>

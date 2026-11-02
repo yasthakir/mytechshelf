@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      const path = window.location.pathname.replace(/\/+$/, '');
+      const segments = path.split('/').filter(Boolean);
+      const id = segments[segments.length - 1] || new URLSearchParams(window.location.search).get('id');
+      const target = id ? `/book.html?id=${encodeURIComponent(id)}` : '/book.html';
+      window.location.replace(target);
+    </script>
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to book page...</p>
+  </body>
+</html>
