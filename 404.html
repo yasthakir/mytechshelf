@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+    <meta http-equiv="refresh" content="0; url=/" />
+    <script>
+      (() => {
+        const currentPath = window.location.pathname;
+        const lookup = {
+          '/admin': '/admin.html',
+          '/admin/': '/admin.html',
+          '/admin/dashboard': '/admin-dashboard.html',
+          '/admin/dashboard/': '/admin-dashboard.html',
+          '/admin/books': '/admin-books.html',
+          '/admin/books/': '/admin-books.html',
+          '/admin/buyers': '/admin-buyers.html',
+          '/admin/buyers/': '/admin-buyers.html',
+          '/admin/payment': '/admin-payment.html',
+          '/admin/payment/': '/admin-payment.html',
+          '/favorites': '/favorites.html',
+          '/favorites/': '/favorites.html',
+          '/more-books': '/more-books.html',
+          '/more-books/': '/more-books.html',
+          '/books': '/category-books.html',
+          '/books/': '/category-books.html',
+          '/cart': '/cart.html',
+          '/cart/': '/cart.html',
+          '/checkout': '/checkout.html',
+          '/checkout/': '/checkout.html'
+        };
+
+        const target = lookup[currentPath] || lookup[currentPath.replace(/\/$/, '')];
+
+        if (target) {
+          window.location.replace(target);
+          return;
+        }
+
+        if (currentPath.startsWith('/admin/')) {
+          window.location.replace('/admin.html');
+          return;
+        }
+
+        if (currentPath.startsWith('/book/')) {
+          const id = currentPath.replace('/book/', '').replace(/\/$/, '');
+          window.location.replace(id ? `/book.html?id=${encodeURIComponent(id)}` : '/book.html');
+          return;
+        }
+
+        window.location.replace('/');
+      })();
+    </script>
+  </head>
+  <body>
+    <p>Redirecting...</p>
+  </body>
+</html>
