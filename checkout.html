@@ -51,8 +51,29 @@
               Address
               <textarea name="address" placeholder="Delivery address" required></textarea>
             </label>
-            <button type="submit" class="btn btn-primary">Place order</button>
+            <button type="submit" class="btn btn-primary">Continue to payment</button>
           </form>
+
+          <div id="paymentStep" class="checkout-payment-step" hidden>
+            <div class="section-head">
+              <div>
+                <span class="eyebrow">Payment</span>
+                <h2>Upload your payment proof</h2>
+              </div>
+            </div>
+
+            <p class="payment-instruction">Scan the QR code, pay securely, and upload the payment screenshot to finish your order.</p>
+            <div id="qrPaymentBox" class="qr-payment-box"></div>
+
+            <form id="paymentForm" class="checkout-form" enctype="multipart/form-data">
+              <label>
+                Upload screenshot
+                <input type="file" name="screenshot" accept="image/*" required />
+              </label>
+              <button type="submit" class="btn btn-primary">Submit payment</button>
+            </form>
+          </div>
+
           <p id="checkoutMessage" class="form-message" aria-live="polite"></p>
         </section>
 

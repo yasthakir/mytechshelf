@@ -63,6 +63,7 @@ async function loadBuyers() {
                 </label>
               </td>
               <td>${order.screenshot ? `<a href="${order.screenshot}" target="_blank" rel="noreferrer"><img src="${order.screenshot}" alt="Payment receipt" class="admin-proof-thumb" /></a>` : '—'}</td>
+              <td><button type="button" class="receipt-btn" data-order='${JSON.stringify(order).replace(/'/g, '&apos;')}'>Generate receipt</button></td>
               <td>${formatDate(order.createdAt)}</td>
             </tr>
           `
@@ -86,6 +87,33 @@ async function loadBuyers() {
         event.target.checked = !event.target.checked;
         window.alert('Unable to update PDF status.');
       }
+    });
+  });
+
+  buyersTableBody.querySelectorAll('.receipt-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      const order = JSON.parse(button.dataset.order.replace(/&apos;/g, "'"));
+      const receiptWindow = window.open('', '_blank', 'width=800,height=700');
+      const receiptHtml = `
+        <html>
+          <head><title>MyTechShelf Receipt</title></head>
+          <body style="font-family: Arial, sans-serif; padding: 24px; color: #111827;">
+            <h2>MyTechShelf Receipt</h2>
+            <p><strong>Order ID:</strong> ${order.id}</p>
+            <p><strong>Customer:</strong> ${order.customer?.name || 'N/A'}</p>
+            <p><strong>Email:</strong> ${order.customer?.email || 'N/A'}</p>
+            <p><strong>WhatsApp:</strong> ${order.customer?.whatsapp || 'N/A'}</p>
+            <p><strong>Book:</strong> ${order.bookTitle || 'N/A'}</p>
+            <p><strong>Amount:</strong> ${money(order.amount)}</p>
+            <p><strong>Payment:</strong> ${order.paymentStatus || 'Pending'}</p>
+            <p><strong>Date:</strong> ${formatDate(order.createdAt)}</p>
+            <hr />
+            <p>Thank you for shopping with MyTechShelf.</p>
+          </body>
+        </html>
+      `;
+      receiptWindow.document.write(receiptHtml);
+      receiptWindow.document.close();
     });
   });
 }

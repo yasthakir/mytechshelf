@@ -25,8 +25,8 @@ const paymentCountdown = document.getElementById('paymentCountdown');
 const paymentActionRow = document.getElementById('paymentActionRow');
 const paymentPaidBtn = document.getElementById('paymentPaidBtn');
 const paymentNotPaidBtn = document.getElementById('paymentNotPaidBtn');
-const buyNowLink = document.getElementById('buyNowLink');
 const addCartDetail = document.querySelector('.add-cart-detail');
+const favoriteDetailBtn = document.querySelector('.favorite-detail-btn');
 const paymentStatusBox = document.getElementById('paymentStatusBox');
 let paymentDecisionTimer = null;
 
@@ -192,11 +192,6 @@ function showPaymentChoice() {
   }, 1000);
 }
 
-buyNowLink.addEventListener('click', (event) => {
-  event.preventDefault();
-  openPurchaseModal(currentBook);
-});
-
 addCartDetail?.addEventListener('click', () => {
   if (!currentBook) return;
   const cart = getCart();
@@ -219,6 +214,35 @@ addCartDetail?.addEventListener('click', () => {
   setTimeout(() => {
     addCartDetail.textContent = 'Add to Cart';
   }, 900);
+});
+
+favoriteDetailBtn?.addEventListener('click', () => {
+  if (!currentBook) return;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const existing = saved.some((item) => item.id === currentBook.id);
+    const next = existing
+      ? saved.filter((item) => item.id !== currentBook.id)
+      : [
+          ...saved,
+          {
+            id: currentBook.id,
+            title: currentBook.title,
+            price: Number(currentBook.price || 0),
+            image: currentBook.image || '',
+            category: currentBook.category || 'General',
+            description: currentBook.description || ''
+          }
+        ];
+
+    localStorage.setItem('favorites', JSON.stringify(next));
+    localStorage.setItem('savedBooks', JSON.stringify(next));
+    favoriteDetailBtn.textContent = existing ? '♡ Save' : '♥ Saved';
+    favoriteDetailBtn.setAttribute('aria-label', existing ? 'Add to favorites' : 'Remove from favorites');
+  } catch (error) {
+    console.error('Unable to update favorites', error);
+  }
 });
 
 document.querySelector('[data-close="true"]').addEventListener('click', closePurchaseModal);

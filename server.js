@@ -234,6 +234,38 @@ async function uploadBookImage(file) {
   return localUrl;
 }
 
+async function uploadOrderImage(file) {
+  if (!file) {
+    return '';
+  }
+
+  if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_API_KEY && CLOUDINARY_API_SECRET) {
+    try {
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: 'mytechshelf/orders',
+        transformation: [{ quality: 'auto', fetch_format: 'auto' }]
+      });
+
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+
+      return result.secure_url || result.url || '';
+    } catch (error) {
+      console.warn('Cloudinary order upload failed, falling back to local path.', error.message);
+    }
+  }
+
+  const relativePath = `/uploads/${file.filename}`;
+  const localUrl = normalizeImageUrl(relativePath);
+
+  if (fs.existsSync(file.path)) {
+    fs.unlinkSync(file.path);
+  }
+
+  return localUrl;
+}
+
 function limitVisibleBooks(books, limit = MAX_BOOKS_VISIBLE) {
   const safeLimit = Number.isFinite(limit) && limit > 0 ? limit : books.length;
   return books.slice(0, safeLimit).map(normalizeBook);
@@ -606,15 +638,16 @@ app.post('/api/orders', upload.single('screenshot'), async (req, res) => {
   const books = await getBooksFromStore();
   const orders = await getOrdersFromStore();
 
-  const { bookId, name, email, whatsapp, deliveryType, amount, paymentStatus } = req.body;
+  const { bookId, name, email, whatsapp, phone, deliveryType, amount, paymentStatus, address } = req.body;
+  const normalizedPhone = String(whatsapp || phone || '').trim();
 
-  if (!bookId || !name || !email || !whatsapp) {
+  if (!bookId || !name || !email || !normalizedPhone) {
     return res.status(400).json({ message: 'Name, email, and WhatsApp number are required.' });
   }
 
   const selectedBook = books.find((book) => book.id === bookId) || books[0];
   const orderAmount = Number(amount || selectedBook.price || 0);
-  const screenshot = req.file ? `/uploads/${req.file.filename}` : '';
+  const screenshot = await uploadOrderImage(req.file);
   const normalizedStatus = String(paymentStatus || (screenshot ? 'Paid' : 'Pending')).trim();
 
   const newOrder = {
@@ -628,9 +661,10 @@ app.post('/api/orders', upload.single('screenshot'), async (req, res) => {
     deliveryType: deliveryType || 'soft copy',
     screenshot,
     customer: {
-      name: name.trim(),
-      email: email.trim(),
-      whatsapp: whatsapp.trim()
+      name: String(name).trim(),
+      email: String(email).trim(),
+      whatsapp: normalizedPhone,
+      address: String(address || '').trim()
     },
     createdAt: new Date().toISOString()
   };
@@ -641,7 +675,7 @@ app.post('/api/orders', upload.single('screenshot'), async (req, res) => {
   res.status(201).json({
     success: true,
     message: normalizedStatus === 'Paid'
-      ? 'Payment received successfully. We will send the PDF within 10–15 minutes. If not received, contact us at info@mytechshelf.in.'
+      ? 'Payment received successfully. We will send the PDF within 1–2 hours. If not received, contact MyTechShelf on Instagram @mytechshelf.'
       : 'Order received. Please complete the payment confirmation to unlock delivery.',
     order: newOrder
   });

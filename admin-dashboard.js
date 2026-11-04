@@ -8,6 +8,26 @@ const totalBuyers = document.getElementById('totalBuyers');
 const booksTableBody = document.getElementById('booksTableBody');
 const ordersTableBody = document.getElementById('ordersTableBody');
 const logoutBtn = document.querySelector('.admin-logout');
+let previousOrderCount = 0;
+
+function playNewOrderSound() {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const context = new AudioContextClass();
+    const oscillator = context.createOscillator();
+    const gainNode = context.createGain();
+    oscillator.type = 'triangle';
+    oscillator.frequency.value = 880;
+    gainNode.gain.value = 0.05;
+    oscillator.connect(gainNode);
+    gainNode.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.2);
+  } catch (error) {
+    console.warn('Audio notification is unavailable in this browser.', error);
+  }
+}
 
 function ensureSession() {
   const token = localStorage.getItem('coderslab_token');
@@ -83,6 +103,11 @@ async function fetchDashboardData() {
   totalOrders.textContent = String(stats.totalOrders);
   totalBuyers.textContent = String(new Set((orders || []).map((order) => order.customer?.email || order.customer?.whatsapp || 'anon').filter(Boolean)).size);
 
+  if (Array.isArray(orders) && orders.length > previousOrderCount) {
+    playNewOrderSound();
+  }
+  previousOrderCount = Array.isArray(orders) ? orders.length : 0;
+
   booksTableBody.innerHTML = books.length
     ? books
         .map(
@@ -122,6 +147,7 @@ async function fetchDashboardData() {
                 </label>
               </td>
               <td>${order.screenshot ? `<a href="${order.screenshot}" target="_blank" rel="noreferrer"><img src="${order.screenshot}" alt="Payment proof" class="admin-proof-thumb" /></a>` : '—'}</td>
+              <td><button type="button" class="receipt-btn" data-order='${JSON.stringify(order).replace(/'/g, '&apos;')}'>Generate receipt</button></td>
               <td>${formatDate(order.createdAt)}</td>
             </tr>
           `
@@ -145,6 +171,33 @@ async function fetchDashboardData() {
         event.target.checked = !event.target.checked;
         window.alert('Unable to update PDF status.');
       }
+    });
+  });
+
+  ordersTableBody.querySelectorAll('.receipt-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      const order = JSON.parse(button.dataset.order.replace(/&apos;/g, "'"));
+      const receiptWindow = window.open('', '_blank', 'width=800,height=700');
+      const receiptHtml = `
+        <html>
+          <head><title>MyTechShelf Receipt</title></head>
+          <body style="font-family: Arial, sans-serif; padding: 24px; color: #111827;">
+            <h2>MyTechShelf Receipt</h2>
+            <p><strong>Order ID:</strong> ${order.id}</p>
+            <p><strong>Customer:</strong> ${order.customer?.name || 'N/A'}</p>
+            <p><strong>Email:</strong> ${order.customer?.email || 'N/A'}</p>
+            <p><strong>WhatsApp:</strong> ${order.customer?.whatsapp || 'N/A'}</p>
+            <p><strong>Book:</strong> ${order.bookTitle || 'N/A'}</p>
+            <p><strong>Amount:</strong> ${money(order.amount)}</p>
+            <p><strong>Payment:</strong> ${order.paymentStatus || 'Pending'}</p>
+            <p><strong>Date:</strong> ${formatDate(order.createdAt)}</p>
+            <hr />
+            <p>Thank you for shopping with MyTechShelf.</p>
+          </body>
+        </html>
+      `;
+      receiptWindow.document.write(receiptHtml);
+      receiptWindow.document.close();
     });
   });
 }
