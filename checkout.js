@@ -4,6 +4,7 @@ const paymentForm = document.getElementById('paymentForm');
 const paymentStep = document.getElementById('paymentStep');
 const qrPaymentBox = document.getElementById('qrPaymentBox');
 const checkoutMessage = document.getElementById('checkoutMessage');
+const continueToUploadBtn = document.getElementById('continueToUploadBtn');
 
 function money(value) {
   return new Intl.NumberFormat('en-IN', {
@@ -29,7 +30,7 @@ function getOrderSnapshot() {
   }
 }
 
-function renderSummary() {
+async function renderSummary() {
   const cart = getCart();
   const total = cart.reduce((sum, item) => sum + Number(item.price || 0) * (item.quantity || 1), 0);
 
@@ -56,17 +57,40 @@ function renderSummary() {
     `
     : '<div class="empty-state">Your cart is empty. Add books before checkout.</div>';
 
-  const qrText = `upi://pay?pa=coderslab@upi&pn=MyTechShelf&am=${total}&cu=INR`;
-  qrPaymentBox.innerHTML = `
-    <div class="payment-qr-card">
-      <p>Scan to pay</p>
-      <div class="qr-code-box">UPI QR</div>
-      <small>${money(total)} total</small>
-      <p class="upi-code">UPI: coderslab@upi</p>
-      <p class="upi-code">Pay using any UPI app</p>
-    </div>
-  `;
-  qrPaymentBox.dataset.qrText = qrText;
+  if (!cart.length) {
+    qrPaymentBox.innerHTML = '<div class="empty-state">Add books to view payment details.</div>';
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/qr?amount=${total}`);
+    const data = await response.json();
+    const qrSrc = data.qrDataUrl || '';
+
+    qrPaymentBox.innerHTML = `
+      <div class="payment-qr-card">
+        <p>Scan to pay</p>
+        <div class="qr-code-box">
+          ${qrSrc ? `<img src="${qrSrc}" alt="UPI QR code" style="width: 180px; height: 180px; object-fit: contain; border-radius: 14px; background: #fff; padding: 12px;" />` : 'UPI QR'}
+        </div>
+        <small>${money(total)} total</small>
+        <p class="upi-code">UPI: ${data.upi || 'coderslab@upi'}</p>
+        <p class="upi-code">Pay using any UPI app</p>
+      </div>
+    `;
+  } catch (error) {
+    const qrText = `upi://pay?pa=coderslab@upi&pn=MyTechShelf&am=${total}&cu=INR`;
+    qrPaymentBox.innerHTML = `
+      <div class="payment-qr-card">
+        <p>Scan to pay</p>
+        <div class="qr-code-box">UPI QR</div>
+        <small>${money(total)} total</small>
+        <p class="upi-code">UPI: coderslab@upi</p>
+        <p class="upi-code">Pay using any UPI app</p>
+      </div>
+    `;
+    qrPaymentBox.dataset.qrText = qrText;
+  }
 }
 
 checkoutForm?.addEventListener('submit', (event) => {
@@ -91,8 +115,15 @@ checkoutForm?.addEventListener('submit', (event) => {
   localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
   checkoutForm.hidden = true;
   paymentStep.hidden = false;
-  checkoutMessage.textContent = 'Order summary saved. Please continue to payment and upload your screenshot.';
+  checkoutMessage.textContent = 'Order placed successfully. Please continue to payment and upload your screenshot.';
   checkoutForm.reset();
+  renderSummary();
+});
+
+continueToUploadBtn?.addEventListener('click', () => {
+  paymentForm.hidden = false;
+  continueToUploadBtn.hidden = true;
+  checkoutMessage.textContent = 'Upload the payment screenshot and submit to complete your order.';
 });
 
 paymentForm?.addEventListener('submit', async (event) => {

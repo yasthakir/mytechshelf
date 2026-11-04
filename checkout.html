@@ -51,26 +51,27 @@
               Address
               <textarea name="address" placeholder="Delivery address" required></textarea>
             </label>
-            <button type="submit" class="btn btn-primary">Continue to payment</button>
+            <button type="submit" class="btn btn-primary">Place Order</button>
           </form>
 
           <div id="paymentStep" class="checkout-payment-step" hidden>
             <div class="section-head">
               <div>
                 <span class="eyebrow">Payment</span>
-                <h2>Upload your payment proof</h2>
+                <h2>Pay and upload screenshot</h2>
               </div>
             </div>
 
-            <p class="payment-instruction">Scan the QR code, pay securely, and upload the payment screenshot to finish your order.</p>
+            <p class="payment-instruction">Scan the QR code, complete the payment, then continue to upload your payment screenshot.</p>
             <div id="qrPaymentBox" class="qr-payment-box"></div>
+            <button id="continueToUploadBtn" type="button" class="btn btn-secondary">Continue</button>
 
-            <form id="paymentForm" class="checkout-form" enctype="multipart/form-data">
+            <form id="paymentForm" class="checkout-form" enctype="multipart/form-data" hidden>
               <label>
-                Upload screenshot
+                Upload payment screenshot
                 <input type="file" name="screenshot" accept="image/*" required />
               </label>
-              <button type="submit" class="btn btn-primary">Submit payment</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
             </form>
           </div>
 
