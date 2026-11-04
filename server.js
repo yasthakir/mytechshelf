@@ -154,15 +154,45 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, JSON.stringify(value, null, 2));
 }
 
-function getPaymentSettings() {
+async function getPaymentSettings() {
+  const db = await connectMongo();
+
+  if (db) {
+    try {
+      const collection = db.collection('payment_settings');
+      const settings = await collection.findOne({});
+      if (settings) {
+        return { ...DEFAULT_PAYMENT_SETTINGS, ...settings };
+      }
+
+      const seeded = { ...DEFAULT_PAYMENT_SETTINGS };
+      await collection.updateOne({}, { $set: seeded }, { upsert: true });
+      writeJson(PAYMENT_SETTINGS_FILE, seeded);
+      return seeded;
+    } catch (error) {
+      console.warn('Unable to load payment settings from MongoDB, using local file fallback.');
+    }
+  }
+
   return readJson(PAYMENT_SETTINGS_FILE, DEFAULT_PAYMENT_SETTINGS);
 }
 
-function savePaymentSettings(settings) {
+async function savePaymentSettings(settings) {
   const nextSettings = {
     ...DEFAULT_PAYMENT_SETTINGS,
     ...(settings || {})
   };
+
+  const db = await connectMongo();
+
+  if (db) {
+    try {
+      const collection = db.collection('payment_settings');
+      await collection.updateOne({}, { $set: nextSettings }, { upsert: true });
+    } catch (error) {
+      console.warn('Unable to save payment settings to MongoDB, using local file fallback.');
+    }
+  }
 
   writeJson(PAYMENT_SETTINGS_FILE, nextSettings);
   return nextSettings;
@@ -523,17 +553,17 @@ app.get('/api/stats', async (_req, res) => {
 });
 
 app.get('/api/payment-settings', requireAdmin, async (_req, res) => {
-  res.json(getPaymentSettings());
+  res.json(await getPaymentSettings());
 });
 
 app.post('/api/payment-settings', requireAdmin, upload.single('qrImage'), async (req, res) => {
-  const currentSettings = getPaymentSettings();
+  const currentSettings = await getPaymentSettings();
   const upiId = String(req.body.upiId || currentSettings.upiId || PAYMENT_UPI).trim();
   const merchantName = String(req.body.merchantName || currentSettings.merchantName || 'CodersLab').trim();
   const note = String(req.body.note || currentSettings.note || 'Scan and pay using any UPI app.').trim();
-  const qrImage = req.file ? `/uploads/${req.file.filename}` : String(req.body.qrImage || currentSettings.qrImage || '').trim();
+  const qrImage = req.file ? await uploadOrderImage(req.file) : String(req.body.qrImage || currentSettings.qrImage || '').trim();
 
-  const updatedSettings = savePaymentSettings({
+  const updatedSettings = await savePaymentSettings({
     upiId: upiId || PAYMENT_UPI,
     merchantName: merchantName || 'CodersLab',
     note: note || 'Scan and pay using any UPI app.',
@@ -550,7 +580,7 @@ app.post('/api/payment-settings', requireAdmin, upload.single('qrImage'), async 
 app.get('/api/qr', async (req, res) => {
   try {
     const amount = Number(req.query.amount || 0);
-    const settings = getPaymentSettings();
+    const settings = await getPaymentSettings();
     const upiId = String(req.query.upi || settings.upiId || PAYMENT_UPI).trim() || PAYMENT_UPI;
     const merchantName = String(settings.merchantName || 'CodersLab').trim() || 'CodersLab';
 
@@ -742,6 +772,26 @@ app.get('/checkout', (_req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'checkout.html'));
 });
 
+app.get('/checkout/', (_req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'checkout.html'));
+});
+
+app.get('/payment', (_req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'payment.html'));
+});
+
+app.get('/payment/', (_req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'payment.html'));
+});
+
+app.get('/payment-upload', (_req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'payment-upload.html'));
+});
+
+app.get('/payment-upload/', (_req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'payment-upload.html'));
+});
+
 app.get('/book/:id', (_req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'book.html'));
 });
@@ -787,6 +837,14 @@ app.use((req, res) => {
 
   if (requestedPath === '/checkout.html') {
     return res.sendFile(path.join(PUBLIC_DIR, 'checkout.html'));
+  }
+
+  if (requestedPath === '/payment.html') {
+    return res.sendFile(path.join(PUBLIC_DIR, 'payment.html'));
+  }
+
+  if (requestedPath === '/payment-upload.html') {
+    return res.sendFile(path.join(PUBLIC_DIR, 'payment-upload.html'));
   }
 
   if (requestedPath === '/book.html') {

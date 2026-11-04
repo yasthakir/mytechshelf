@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Payment Upload</title><link rel="stylesheet" href="/styles.css"/></head><body>
+<header class="topbar"><div class="container nav-wrap"><div class="brand"><span class="brand-mark">TS</span><span>MyTechShelf</span></div></div></header>
+<main class="cart-page"><div class="container checkout-layout"><section class="checkout-panel"><span class="eyebrow">Upload</span><h2>Upload payment screenshot</h2>
+<form id="f" class="checkout-form" enctype="multipart/form-data"><label>Screenshot<input type="file" name="screenshot" accept="image/*" required/></label><button class="btn btn-primary">Submit</button></form><p id="msg"></p></section></div></main>
+<script>
+const f=document.getElementById('f');
+f.addEventListener('submit',async e=>{
+ e.preventDefault();
+ const cart=JSON.parse(localStorage.getItem('cart')||'[]');
+ const po=JSON.parse(localStorage.getItem('pendingOrder')||'null');
+ const file=f.elements.screenshot.files[0];
+ if(!file){document.getElementById('msg').textContent='Select screenshot';return;}
+ const fd=new FormData();
+ fd.append('bookId',String(cart[0]?.id||'book-unknown'));
+ fd.append('name',String(po?.customer?.name||''));
+ fd.append('email',String(po?.customer?.email||''));
+ fd.append('whatsapp',String(po?.customer?.phone||''));
+ fd.append('address',String(po?.customer?.address||''));
+ fd.append('amount',String(cart.reduce((s,i)=>s+Number(i.price||0)*(i.quantity||1),0)));
+ fd.append('paymentStatus','Paid');
+ fd.append('screenshot',file);
+ const r=await fetch('/api/orders',{method:'POST',body:fd});
+ const res=await r.json();
+ if(!r.ok){document.getElementById('msg').textContent=res.message;return;}
+ localStorage.removeItem('cart');localStorage.removeItem('pendingOrder');
+ alert('Payment submitted successfully!');
+ window.location.href='/';
+});
+</script></body></html>

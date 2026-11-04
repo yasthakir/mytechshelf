@@ -1,0 +1,9 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Payment</title><link rel="stylesheet" href="/styles.css"/></head><body>
+<header class="topbar"><div class="container nav-wrap"><div class="brand"><span class="brand-mark">TS</span><span>MyTechShelf</span></div></div></header>
+<main class="cart-page"><div class="container checkout-layout"><section class="checkout-panel"><span class="eyebrow">Payment</span><h2>Scan QR to pay</h2><div id="qr"></div><button id="cont" class="btn btn-primary" style="margin-top:1rem">Continue</button><p id="msg"></p></section></div></main>
+<script>
+function getCart(){try{return JSON.parse(localStorage.getItem('cart')||'[]')}catch{return[]}}
+const total=getCart().reduce((s,i)=>s+Number(i.price||0)*(i.quantity||1),0);
+fetch('/api/qr?amount='+total).then(r=>r.json()).then(d=>{document.getElementById('qr').innerHTML=`<img src="${d.qrDataUrl}" style="width:200px;height:200px"/><p>UPI: ${d.upi}</p><p>${d.amount}</p>`;}).catch(()=>{});
+document.getElementById('cont').onclick=()=>window.location.href='/payment-upload';
+</script></body></html>

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Checkout | MyTechShelf</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,15 +12,11 @@
   <body>
     <header class="topbar">
       <div class="container nav-wrap">
-        <div class="brand">
-          <span class="brand-mark">TS</span>
-          <span>MyTechShelf</span>
-        </div>
+        <div class="brand"><span class="brand-mark">TS</span><span>MyTechShelf</span></div>
         <nav class="main-nav">
           <a href="/">Home</a>
           <a href="/cart">Cart</a>
         </nav>
-        <a href="/cart" class="btn btn-secondary">Back to cart</a>
       </div>
     </header>
 
@@ -30,7 +26,7 @@
           <div class="section-head">
             <div>
               <span class="eyebrow">Checkout</span>
-              <h2>Proceed with your order</h2>
+              <h2>Enter your details</h2>
             </div>
           </div>
 
@@ -44,52 +40,43 @@
               <input type="email" name="email" placeholder="you@example.com" required />
             </label>
             <label>
-              WhatsApp number
+              Phone
               <input type="tel" name="phone" placeholder="+91 98xxx xxxxx" required />
             </label>
             <label>
               Address
               <textarea name="address" placeholder="Delivery address" required></textarea>
             </label>
-            <button type="submit" class="btn btn-primary">Place Order</button>
+            <button type="submit" class="btn btn-primary">Continue to payment</button>
           </form>
-
-          <div id="paymentStep" class="checkout-payment-step" hidden>
-            <div class="section-head">
-              <div>
-                <span class="eyebrow">Payment</span>
-                <h2>Pay and upload screenshot</h2>
-              </div>
-            </div>
-
-            <p class="payment-instruction">Scan the QR code, complete the payment, then continue to upload your payment screenshot.</p>
-            <div id="qrPaymentBox" class="qr-payment-box"></div>
-            <button id="continueToUploadBtn" type="button" class="btn btn-secondary">Continue</button>
-
-            <form id="paymentForm" class="checkout-form" enctype="multipart/form-data" hidden>
-              <label>
-                Upload payment screenshot
-                <input type="file" name="screenshot" accept="image/*" required />
-              </label>
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-          </div>
 
           <p id="checkoutMessage" class="form-message" aria-live="polite"></p>
         </section>
-
-        <aside class="checkout-panel">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">Summary</span>
-              <h2>Order overview</h2>
-            </div>
-          </div>
-          <div id="checkoutSummary" class="cart-summary-box"></div>
-        </aside>
       </div>
     </main>
 
-    <script src="/checkout.js"></script>
+    <script>
+      const form = document.getElementById('checkoutForm');
+      const checkoutMessage = document.getElementById('checkoutMessage');
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const customer = Object.fromEntries(formData.entries());
+
+        if (!customer.name || !customer.email || !customer.phone || !customer.address) {
+          checkoutMessage.textContent = 'Please fill in all the checkout details before continuing.';
+          return;
+        }
+
+        localStorage.setItem('pendingOrder', JSON.stringify({
+          customer,
+          createdAt: new Date().toISOString()
+        }));
+
+        checkoutMessage.textContent = 'Details saved. Redirecting to payment...';
+        window.location.href = '/payment';
+      });
+    </script>
   </body>
 </html>
