@@ -34,7 +34,7 @@ const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'infinity-software';
 const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME || '';
 const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY || '';
 const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || '';
-const BACKEND_PUBLIC_URL = process.env.BACKEND_PUBLIC_URL || process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+const BACKEND_PUBLIC_URL = process.env.BACKEND_PUBLIC_URL || process.env.PUBLIC_BASE_URL || process.env.RENDER_EXTERNAL_URL || (process.env.NODE_ENV === 'production' || process.env.RENDER ? 'https://mytechshelf-backend.onrender.com' : 'http://localhost:3000');
 
 if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_API_KEY && CLOUDINARY_API_SECRET) {
   cloudinary.config({
@@ -208,16 +208,30 @@ async function uploadBookImage(file) {
   }
 
   if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_API_KEY && CLOUDINARY_API_SECRET) {
-    const result = await cloudinary.uploader.upload(file.path, {
-      folder: 'mytechshelf/books',
-      transformation: [{ quality: 'auto', fetch_format: 'auto' }]
-    });
+    try {
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: 'mytechshelf/books',
+        transformation: [{ quality: 'auto', fetch_format: 'auto' }]
+      });
 
-    return result.secure_url || result.url || '';
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+
+      return result.secure_url || result.url || '';
+    } catch (error) {
+      console.warn('Cloudinary upload failed, falling back to local upload path.', error.message);
+    }
   }
 
   const relativePath = `/uploads/${file.filename}`;
-  return normalizeImageUrl(relativePath);
+  const localUrl = normalizeImageUrl(relativePath);
+
+  if (fs.existsSync(file.path)) {
+    fs.unlinkSync(file.path);
+  }
+
+  return localUrl;
 }
 
 function limitVisibleBooks(books, limit = MAX_BOOKS_VISIBLE) {
