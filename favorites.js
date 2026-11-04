@@ -91,6 +91,16 @@ function renderFavorites() {
     )
     .join('');
 
+  favoritesGrid.querySelectorAll('.book-card').forEach((card) => {
+    card.addEventListener('click', (event) => {
+      if (event.target.closest('.favorite-toggle') || event.target.closest('.add-cart-btn')) return;
+      const bookId = card.dataset.bookId;
+      if (bookId) {
+        window.location.href = `/book.html?id=${encodeURIComponent(bookId)}`;
+      }
+    });
+  });
+
   favoritesGrid.querySelectorAll('.favorite-toggle').forEach((button) => {
     button.addEventListener('click', (event) => {
       event.stopPropagation();

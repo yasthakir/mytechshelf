@@ -145,7 +145,9 @@ async function loadCategoryBooks() {
   booksGrid.querySelectorAll('.book-card').forEach((card) => {
     const openBook = () => {
       const bookId = card.dataset.bookId;
-      if (bookId) window.location.href = `/book/${bookId}`;
+      if (bookId) {
+        window.location.href = `/book.html?id=${encodeURIComponent(bookId)}`;
+      }
     };
 
     card.addEventListener('click', (event) => {

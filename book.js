@@ -88,9 +88,10 @@ function populateReviewList(reviews = []) {
 
 async function loadBook() {
   const pathParts = window.location.pathname.split('/').filter(Boolean);
-  const routeId = pathParts[pathParts.length - 1] || new URLSearchParams(window.location.search).get('id');
+  const queryId = new URLSearchParams(window.location.search).get('id');
+  const routeId = queryId || pathParts[pathParts.length - 1];
 
-  if (!routeId) {
+  if (!routeId || routeId === 'book.html') {
     window.location.href = '/';
     return;
   }
